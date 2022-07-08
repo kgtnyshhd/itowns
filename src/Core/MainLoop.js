@@ -113,7 +113,9 @@ class MainLoop extends EventDispatcher {
                 document.title += ' ⌛';
             }
 
-            requestAnimationFrame((timestamp) => { this.#step(view, timestamp); });
+            this.gfxEngine.renderer.setAnimationLoop((timestamp) => { this.#step(view, timestamp); });
+
+            // requestAnimationFrame((timestamp) => { this.#step(view, timestamp); });
         }
     }
 
@@ -169,7 +171,8 @@ class MainLoop extends EventDispatcher {
 
         view.execFrameRequesters(MAIN_LOOP_EVENTS.UPDATE_START, dt, this.#updateLoopRestarted);
 
-        const willRedraw = this.#needsRedraw;
+        // const willRedraw = this.#needsRedraw;
+        const willRedraw = true;
         this.#lastTimestamp = timestamp;
 
         // Reset internal state before calling _update (so future calls to View.notifyChange()
