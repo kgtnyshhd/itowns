@@ -46,9 +46,9 @@
             document.body.appendChild( VRButton.createButton( renderer ) );
             renderer.xr.enabled = true;
 
-            // renderer.xr.addEventListener('sessionstart', () => {
-            //     renderer.xr.setReferenceSpaceType('viewer');
-            // });
+            renderer.xr.addEventListener('sessionstart', () => {
+                renderer.xr.setReferenceSpaceType('viewer');
+            });
 
             // renderer.xr.addEventListener('sessionstart', () => {
             //     renderer.xr.getCamera().position.copy(view.camera.position('EPSG:4978').toVector3());
