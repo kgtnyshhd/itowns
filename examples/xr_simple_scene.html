@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>Itowns - Simple XR example</title>
+
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="css/example.css">
+        <link rel="stylesheet" type="text/css" href="css/LoadingScreen.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+    </head>
+    <body>
+        <div id="viewerDiv"></div>
+        <script src="js/GUI/GuiTools.js"></script>
+        <script src="../dist/itowns.js"></script>
+        <script src="js/GUI/LoadingScreen.js"></script>
+        <script src="../dist/debug.js"></script>
+        <script type="text/javascript">
+            var THREE = itowns.THREE;
+        </script>
+        <script type="module">
+            import { VRButton } from './libs/webxr/VRButton.js';
+
+            // WITH ITOWNS
+
+            // // `viewerDiv` will contain iTowns' rendering area (`<canvas>`)
+            // var viewerDiv = document.getElementById('viewerDiv');
+            // var view = new itowns.View('EPSG:4978', viewerDiv);
+            // var scene = view.scene;
+            // var camera = view.camera.camera3D;
+            
+            // var renderer = view.mainLoop.gfxEngine.renderer;
+
+            // WITHOUT ITOWNS
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+            // SHARED
+            var geom = new THREE.BoxGeometry(1,1,1);
+            var mat = new THREE.MeshBasicMaterial({color: 0x00ff00});
+            var cube = new THREE.Mesh(geom, mat);
+            // cube.position.set(100,100,10);
+            // cube.updateMatrixWorld();
+            scene.add(cube);
+
+            // camera.position.set(100, 100, 5);
+            camera.position.z = 5;
+
+            function animate() {
+                renderer.render( scene, camera );
+            }
+            renderer.setAnimationLoop( animate );
+
+            // Enable XR
+            // var renderer = view.mainLoop.gfxEngine.renderer;
+            renderer.xr.enabled = true;
+            // renderer.xr.setReferenceSpaceType('local');
+            document.body.appendChild( VRButton.createButton( renderer ) );
+
+            const cameraGroup = new THREE.Group();
+            cameraGroup.position.copy(camera.position);  // Set the initial VR Headset Position.
+            // cameraGroup.quaternion.copy(camera.quaternion);
+
+            //When user turn on the VR mode.
+            renderer.xr.addEventListener('sessionstart', function () {
+                scene.add(cameraGroup);
+                cameraGroup.add(camera);
+            });
+            //When user turn off the VR mode.
+            renderer.xr.addEventListener('sessionend', function () {
+                scene.remove(cameraGroup);
+                cameraGroup.remove(camera);
+            });
+
+            // renderer.xr.addEventListener('sessionstart', () => {
+            //     renderer.xr.getCamera().position.copy(camera.position);
+            //     renderer.xr.getCamera().lookAt(camera);
+            //     // renderer.xr.updateCamera(view.camera.camera3D);
+            // });
+
+            // setupLoadingScreen(viewerDiv, view);
+
+        </script>
+    </body>
+</html>
